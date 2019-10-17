@@ -16,6 +16,3 @@ RUN curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Di
   rm -rf /usr/lib/sonar-scanner/conf/sonar-scanner.properties
 
 ENV SONAR_RUNNER_HOME=/usr/lib/sonar-scanner
-
-ENTRYPOINT ["sonar-scanner"] 
-CMD ["-Dsonar.projectBaseDir=/usr/src"]
