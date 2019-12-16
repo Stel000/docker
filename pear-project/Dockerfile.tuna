@@ -1,0 +1,31 @@
+FROM php:7.2-fpm
+
+LABEL maintainer="Stel000"
+LABEL email="kkcyc1996@gmail.com"
+
+# Change debian deb source to tsinghua mirrors for accelerate docker build in mainland
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free" >/etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free" >>/etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free" >>/etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free" >>/etc/apt/sources.list
+
+# Install packaging requirement
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    git
+
+# Install php redis and igbinary extension
+RUN pecl install redis-5.1.1 \
+    && pecl install igbinary-3.0.1 \
+    && docker-php-ext-enable redis igbinary
+
+# Clone pearProject and install denpendcies with wget
+RUN cd /var/www \
+    && rm -rf ./html \
+    && git clone https://github.com/a54552239/pearProjectApi \
+    && mv ./pearProjectApi ./html \
+    && cd html \
+    && wget https://vilson-static.oss-cn-shenzhen.aliyuncs.com/common/vendor.zip \
+    && unzip vendor.zip
